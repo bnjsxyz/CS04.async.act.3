@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#DA291C">
+  <meta name="description" content="A responsive Grade 12 interactive lesson on applying life skills across personal, social, academic, career, and digital contexts.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Life Skills Quest: Applying Skills Across Four Domains</title>
+  <style>
+    :root {
+      --red:#DA291C; --deep-red:#C42519; --scarlet:#E82B1D;
+      --gold:#FFB81C; --amber:#FCAE03; --soft-gold:#FBCC3E;
+      --ink:#25242a; --muted:#66636b; --paper:#fffdf8; --line:#eadfd6;
+      --green:#19764a; --blue:#245a9b; --shadow:0 14px 35px rgba(67,34,28,.12);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%;overflow-x:hidden}
+    body{margin:0;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:
+      radial-gradient(circle at 10% 0%,rgba(255,184,28,.2),transparent 25rem),
+      radial-gradient(circle at 95% 15%,rgba(218,41,28,.12),transparent 28rem),#f8f5f1;line-height:1.55;overflow-wrap:anywhere;overscroll-behavior-x:none}
+    button,input,select,textarea{font:inherit}
+    button{touch-action:manipulation}
+    :focus-visible{outline:4px solid rgba(255,184,28,.65);outline-offset:2px}
+    .topbar{position:sticky;top:0;z-index:20;background:rgba(255,253,248,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .topbar-inner{max-width:1180px;margin:auto;padding:10px 18px;display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:center}
+    .brand{font-weight:900;letter-spacing:.02em;color:var(--deep-red);white-space:nowrap}
+    .brand b{display:inline-grid;place-items:center;width:29px;height:29px;border-radius:8px;background:var(--red);color:white;margin-right:7px}
+    .progress-shell{height:12px;background:#eee5de;border-radius:99px;overflow:hidden}
+    .progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .45s ease;border-radius:inherit}
+    .progress-text{font-size:.82rem;font-weight:800;color:var(--muted);white-space:nowrap}
+    .app{max-width:1180px;margin:auto;display:grid;grid-template-columns:235px minmax(0,1fr);gap:22px;padding:22px 18px 46px}
+    .side{position:sticky;top:70px;align-self:start;background:white;border:1px solid var(--line);border-radius:20px;padding:14px;box-shadow:var(--shadow)}
+    .side-title{font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:900;padding:4px 8px 10px}
+    .session-card{margin-top:12px;padding:11px;border-radius:12px;background:#fff7dc;border:1px solid #f1d382;font-size:.76rem;color:#665334}.session-card b{display:block;color:var(--deep-red);font-size:.82rem;overflow-wrap:anywhere}
+    .step-nav{display:grid;gap:6px}
+    .step-btn{border:0;background:transparent;text-align:left;padding:10px;border-radius:12px;color:var(--muted);font-weight:750;display:flex;gap:9px;align-items:center;cursor:pointer}
+    .step-btn .num{width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:#f1ece8;font-size:.78rem;flex:0 0 auto}
+    .step-btn.active{background:rgba(218,41,28,.09);color:var(--deep-red)}
+    .step-btn.active .num{background:var(--red);color:white}
+    .step-btn.done .num{background:var(--green);color:white}
+    .step-btn:disabled{opacity:.38;cursor:not-allowed}
+    main{min-width:0}
+    .screen{display:none;animation:rise .35s ease}
+    .screen.active{display:block}
+    @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .panel{background:rgba(255,255,255,.97);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,4vw,42px);box-shadow:var(--shadow);overflow:hidden}
+    .hero{position:relative;background:linear-gradient(135deg,var(--deep-red),var(--red) 58%,var(--scarlet));color:white;min-height:510px;display:grid;align-content:center}
+    .hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:rgba(255,184,28,.19)}
+    .hero:before{width:270px;height:270px;right:-75px;top:-70px}.hero:after{width:170px;height:170px;left:-60px;bottom:-60px}
+    .eyebrow{font-weight:900;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;color:var(--deep-red)}
+    .hero .eyebrow{color:var(--soft-gold)}
+    h1{font-size:clamp(2rem,5vw,4.35rem);line-height:1.02;margin:.2em 0 .25em;letter-spacing:-.045em;max-width:800px}
+    h2{font-size:clamp(1.65rem,3.2vw,2.65rem);line-height:1.1;margin:.18em 0 .4em;letter-spacing:-.03em}
+    h3{line-height:1.2;margin:0 0 .45em}
+    .lead{font-size:clamp(1rem,1.7vw,1.2rem);max-width:760px;color:var(--muted)}
+    .hero .lead{color:rgba(255,255,255,.9)}
+    .gold-rule{height:7px;width:115px;border-radius:99px;background:var(--gold);margin:20px 0}
+    .register{position:relative;z-index:1;margin-top:22px;background:white;color:var(--ink);border-radius:18px;padding:18px;display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;max-width:820px}
+    label{font-size:.84rem;font-weight:850;color:#524d50;display:block;margin-bottom:5px}
+    input[type=text],select,textarea{width:100%;border:2px solid #ded5ce;border-radius:12px;padding:12px 13px;background:#fff;color:var(--ink)}
+    textarea{min-height:110px;resize:vertical}
+    input[type=text]:focus,select:focus,textarea:focus{border-color:var(--gold);outline:3px solid rgba(255,184,28,.22)}
+    .btn{border:0;border-radius:12px;padding:12px 18px;min-height:46px;font-weight:900;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease,opacity .15s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 7px 16px rgba(70,40,30,.16)}
+    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+    .btn-primary{background:var(--red);color:white}.btn-gold{background:var(--gold);color:#2d2412}.btn-light{background:white;color:var(--deep-red);border:2px solid rgba(218,41,28,.22)}.btn-ghost{background:#f2ece7;color:var(--ink)}
+    .toolbar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+    .grid{display:grid;gap:16px}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:18px}
+    .card.red-top{border-top:6px solid var(--red)}.card.gold-top{border-top:6px solid var(--gold)}
+    .icon{font-size:2rem;line-height:1;margin-bottom:10px}
+    .tag{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:5px 10px;font-size:.76rem;font-weight:900;background:rgba(255,184,28,.2);color:#6f4b00}
+    .callout{border-left:6px solid var(--gold);background:#fff8df;padding:15px 17px;border-radius:6px 14px 14px 6px;margin:18px 0}
+    .callout.red{border-color:var(--red);background:#fff1ef}.callout.green{border-color:var(--green);background:#eefaf4}
+    .objective-list{display:grid;gap:10px;padding:0;list-style:none}.objective-list li{display:flex;gap:10px}.objective-list li:before{content:"✓";color:var(--green);font-weight:950}
+    .rating-row{display:grid;grid-template-columns:minmax(180px,1fr) 2fr 38px;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid var(--line)}
+    input[type=range]{width:100%;accent-color:var(--red)}
+    .rating-value{display:grid;place-items:center;background:var(--red);color:white;border-radius:9px;width:36px;height:36px;font-weight:900}
+    .dimension-card{position:relative;cursor:pointer;min-height:210px;transition:.2s ease}
+    .dimension-card:hover{transform:translateY(-3px)}
+    .dimension-card[aria-expanded=true]{background:#fff7dc;border-color:var(--gold);box-shadow:0 10px 25px rgba(252,174,3,.18)}
+    .dimension-card .details{display:none;margin-top:12px}.dimension-card[aria-expanded=true] .details{display:block}
+    .skill-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.skill-pills span{font-size:.78rem;font-weight:850;padding:5px 9px;border-radius:99px;background:white;border:1px solid var(--line)}
+    .question{border:1px solid var(--line);border-radius:17px;padding:18px;margin:15px 0;background:white}
+    .question legend,.q-title{font-weight:900;margin-bottom:10px;display:block}
+    .choice{display:flex;gap:10px;align-items:flex-start;border:2px solid #e8e0da;padding:11px 12px;border-radius:12px;margin:8px 0;cursor:pointer;transition:.15s ease}
+    .choice:hover{border-color:var(--gold);background:#fffaf0}.choice input{margin-top:4px;accent-color:var(--red);width:18px;height:18px;flex:0 0 auto}
+    .feedback{display:none;margin-top:12px;border-radius:12px;padding:12px 14px;font-weight:700}.feedback.show{display:block}.feedback.good{background:#e8f7ef;color:#155c3c;border:1px solid #a9ddc2}.feedback.try{background:#fff2e9;color:#8a381d;border:1px solid #f0c0a7}.feedback.info{background:#edf4ff;color:#264d7e;border:1px solid #b9cfec}
+    .mission-head{display:flex;align-items:center;gap:14px;margin-bottom:12px}.mission-icon{width:58px;height:58px;border-radius:17px;background:linear-gradient(135deg,var(--gold),var(--soft-gold));display:grid;place-items:center;font-size:1.8rem;flex:0 0 auto}
+    .scenario{background:linear-gradient(135deg,#fff9e8,#fff);border:1px solid #f0d998;border-radius:18px;padding:20px;margin:18px 0}
+    .skill-lab{margin:20px 0;border:1px solid #ead6cf;border-radius:20px;overflow:hidden;background:#fff}
+    .skill-lab-head{padding:16px 18px;background:linear-gradient(110deg,rgba(218,41,28,.09),rgba(255,184,28,.18));display:flex;align-items:end;gap:10px;flex-wrap:wrap}
+    .skill-lab-head>div{flex:1 1 280px}.skill-lab-head label{color:var(--deep-red)}
+    .skill-context-card{padding:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .context-block{border-radius:15px;padding:15px;background:#fff9e8;border:1px solid #f2dfa4}.context-block.situation{background:#fff1ef;border-color:#f1c3bc}
+    .context-block h4{margin:0 0 6px;color:var(--deep-red);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase}
+    .explore-count{font-size:.8rem;font-weight:850;color:var(--muted);padding:0 20px 16px}
+    .micro-label{font-size:.72rem;letter-spacing:.11em;text-transform:uppercase;font-weight:950;color:var(--deep-red)}
+    .counter{font-size:.78rem;text-align:right;color:var(--muted);margin-top:4px}
+    .badge-row{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}.badge{border:2px dashed #d9ccc4;border-radius:14px;padding:9px 12px;font-weight:850;color:#8a827d;filter:grayscale(1);opacity:.65}.badge.earned{border-style:solid;border-color:var(--gold);background:#fff6d8;color:#704900;filter:none;opacity:1}
+    .score-ring{width:150px;height:150px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--red) var(--score-angle,0deg),#ece5df 0);margin:auto;position:relative}.score-ring:before{content:"";position:absolute;width:116px;height:116px;border-radius:50%;background:white}.score-ring span{position:relative;font-size:2rem;font-weight:950;color:var(--deep-red)}
+    .result-grid{display:grid;grid-template-columns:190px 1fr;gap:20px;align-items:center}
+    .certificate{display:none;position:relative;background:white;border:14px solid var(--red);outline:5px solid var(--gold);outline-offset:-25px;padding:55px 46px;text-align:center;min-height:620px;overflow:hidden}
+    .certificate.visible{display:block}.certificate:before,.certificate:after{content:"";position:absolute;width:180px;height:180px;background:var(--gold);transform:rotate(45deg)}.certificate:before{left:-115px;top:-115px}.certificate:after{right:-115px;bottom:-115px}
+    .cert-kicker{text-transform:uppercase;letter-spacing:.2em;color:var(--deep-red);font-weight:950}.cert-name{font-family:Georgia,serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:700;color:var(--deep-red);border-bottom:2px solid var(--gold);display:inline-block;padding:5px 24px;margin:18px 0 8px}.cert-title{font-size:clamp(2rem,4vw,3rem);font-family:Georgia,serif;margin:5px 0}.cert-grid{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin:22px 0}.cert-stat b{display:block;font-size:1.2rem;color:var(--deep-red)}.signature{margin:45px auto 0;border-top:1px solid #555;width:280px;padding-top:6px;font-weight:850}
+    .toast{position:fixed;right:18px;bottom:18px;background:#25242a;color:white;padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:50;transform:translateY(120px);opacity:0;transition:.25s ease}.toast.show{transform:none;opacity:1}
+    .confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}.confetti i{position:absolute;top:-20px;width:10px;height:18px;background:var(--gold);animation:fall 2.2s linear forwards}.confetti i:nth-child(2n){background:var(--red)}.confetti i:nth-child(3n){background:#fff}.confetti i:nth-child(4n){background:#1987a8}@keyframes fall{to{transform:translateY(110vh) rotate(700deg)}}
+    .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .small{font-size:.86rem;color:var(--muted)}
+    @media(max-width:850px){.app{grid-template-columns:1fr}.side{position:static;overflow:auto;padding:9px}.side-title,.session-card{display:none}.step-nav{display:flex;min-width:max-content}.step-btn{width:44px;height:44px;padding:7px;justify-content:center}.step-btn .label{display:none}.topbar-inner{grid-template-columns:auto 1fr}.progress-text{grid-column:1/-1;text-align:right;margin-top:-6px}.grid-4,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}.register{grid-template-columns:1fr 1fr}.register .btn{grid-column:1/-1}.hero{min-height:auto}.result-grid{grid-template-columns:1fr;text-align:center}}
+    @media(max-width:560px){.app{padding:12px 10px 32px}.panel{border-radius:18px;padding:20px 16px}.grid-2,.grid-3,.grid-4,.skill-context-card{grid-template-columns:1fr}.register{grid-template-columns:1fr}.rating-row{grid-template-columns:1fr 42px}.rating-row input{grid-column:1/-1;grid-row:2}.toolbar .btn{flex:1}.certificate{padding:48px 24px;border-width:9px;outline-offset:-18px}.cert-grid{gap:15px}}
+    @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+    @media print{body{background:white}.topbar,.side,.screen,.no-print,.toast,.confetti{display:none!important}.app{display:block;max-width:none;padding:0}.screen#certificateScreen{display:block!important}.panel{box-shadow:none;border:0;padding:0}.certificate.visible{display:block!important;width:100%;height:100vh;min-height:0;page-break-inside:avoid}.certificate{border-width:12px} @page{size:landscape;margin:8mm}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand"><b>LS</b> LIFE SKILLS QUEST</div>
+      <div class="progress-shell" role="progressbar" aria-label="Lesson progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-text" id="progressText">0% complete</div>
+    </div>
+  </header>
+
+  <div class="app">
+    <aside class="side" aria-label="Lesson stages">
+      <div class="side-title">Your quest map</div>
+      <nav class="step-nav" id="stepNav"></nav>
+      <div class="session-card" id="sessionCard" hidden><span>Checked in as</span><b id="sideStudent"></b><span id="sideStarted"></span></div>
+    </aside>
+
+    <main>
+      <section class="screen active" id="welcomeScreen" data-step="0">
+        <div class="panel hero">
+          <div class="eyebrow">Grade 12 • Self-paced learning</div>
+          <h1>Applying Life Skills Across Different Domains</h1>
+          <div class="gold-rule"></div>
+          <p class="lead">Make choices, examine consequences, and discover how the same life skill can help you manage yourself, learn effectively, prepare for work, and act responsibly online.</p>
+          <div class="register" aria-label="Learner information">
+            <div><label for="studentName">Complete name</label><input id="studentName" type="text" autocomplete="name" placeholder="e.g., Andrea Santos"></div>
+            <div><label for="studentSection">Section</label><input id="studentSection" type="text" autocomplete="organization-title" placeholder="e.g., Grade 12 - Rizal"></div>
+            <button class="btn btn-gold" id="startBtn" type="button">Begin quest →</button>
+          </div>
+          <p id="resumeNote" class="small" style="color:#fff;margin-top:12px;position:relative;z-index:1"></p>
+        </div>
+      </section>
+
+      <section class="screen" id="checkinScreen" data-step="1">
+        <div class="panel">
+          <div class="eyebrow">Stage 1 • Charge up</div><h2>My Life Skills Check-In</h2>
+          <p class="lead">Rate your current confidence honestly. This is a personal starting point, not a test.</p>
+          <div id="ratings">
+            <div class="rating-row"><span>I recognize and manage my emotions.</span><input type="range" min="1" max="5" value="3" data-rating="self"><output class="rating-value">3</output></div>
+            <div class="rating-row"><span>I maintain respectful relationships.</span><input type="range" min="1" max="5" value="3" data-rating="social"><output class="rating-value">3</output></div>
+            <div class="rating-row"><span>I manage my learning responsibilities.</span><input type="range" min="1" max="5" value="3" data-rating="academic"><output class="rating-value">3</output></div>
+            <div class="rating-row"><span>I make thoughtful choices about my future.</span><input type="range" min="1" max="5" value="3" data-rating="career"><output class="rating-value">3</output></div>
+            <div class="rating-row"><span>I behave responsibly in digital spaces.</span><input type="range" min="1" max="5" value="3" data-rating="digital"><output class="rating-value">3</output></div>
+          </div>
+          <div style="margin-top:20px"><label for="checkinReflection">Which area would you most like to strengthen, and why?</label><textarea id="checkinReflection" maxlength="500" placeholder="Write at least 20 characters..."></textarea><div class="counter"><span id="checkinCount">0</span>/500</div></div>
+          <div class="callout"><b>Privacy reminder:</b> Share only what you are comfortable recording. You may describe a general learning goal rather than a private experience.</div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="0">← Back</button><button class="btn btn-primary" type="button" id="checkinNext">Save check-in →</button></div>
+        </div>
+      </section>
+
+      <section class="screen" id="foundationScreen" data-step="2">
+        <div class="panel">
+          <div class="eyebrow">Stage 2 • Build the foundation</div><h2>Life Skills: Knowledge Put Into Action</h2>
+          <p class="lead">Life skills are abilities, attitudes, and socio-emotional competencies that help people handle everyday demands, make informed decisions, build positive relationships, and respond productively to change.</p>
+          <div class="grid grid-3" style="margin-top:20px">
+            <article class="card red-top"><div class="icon">🧠</div><h3>Think</h3><p>Understand information, examine evidence, create ideas, and solve problems.</p></article>
+            <article class="card gold-top"><div class="icon">❤️</div><h3>Feel and relate</h3><p>Recognize emotions, show empathy, communicate, and build healthy relationships.</p></article>
+            <article class="card red-top"><div class="icon">🛠️</div><h3>Act</h3><p>Make responsible choices and turn knowledge into practical action.</p></article>
+          </div>
+          <div class="callout red"><b>Important:</b> Knowing the definition of resilience is not the same as showing resilience. A skill becomes meaningful when it guides what you actually do.</div>
+          <h3>Quick Check</h3>
+          <div id="foundationQuiz"></div>
+          <div class="feedback info" id="foundationFeedback" role="status"></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="1">← Back</button><button class="btn btn-primary" type="button" id="foundationCheck">Check answers</button><button class="btn btn-gold" type="button" id="foundationNext" disabled>Continue →</button></div>
+        </div>
+      </section>
+
+      <section class="screen" id="dimensionsScreen" data-step="3">
+        <div class="panel">
+          <div class="eyebrow">Stage 3 • Connect the framework</div><h2>Four Interrelated Dimensions</h2>
+          <p class="lead">Tap each card to reveal its focus and core skills. The dimensions overlap and reinforce one another.</p>
+          <div class="grid grid-2" id="dimensionCards">
+            <button class="card dimension-card red-top" type="button" aria-expanded="false"><div class="icon">🔎</div><h3>Learning to Know</h3><p>How can I understand the world?</p><div class="details"><b>Cognitive or learning dimension</b><div class="skill-pills"><span>Creativity</span><span>Critical thinking</span><span>Problem-solving</span></div></div></button>
+            <button class="card dimension-card gold-top" type="button" aria-expanded="false"><div class="icon">⚙️</div><h3>Learning to Do</h3><p>How can I apply what I know?</p><div class="details"><b>Instrumental or employability dimension</b><div class="skill-pills"><span>Cooperation</span><span>Negotiation</span><span>Decision-making</span></div></div></button>
+            <button class="card dimension-card gold-top" type="button" aria-expanded="false"><div class="icon">🌱</div><h3>Learning to Be</h3><p>How can I develop and manage myself?</p><div class="details"><b>Individual or empowerment dimension</b><div class="skill-pills"><span>Self-management</span><span>Resilience</span><span>Communication</span></div></div></button>
+            <button class="card dimension-card red-top" type="button" aria-expanded="false"><div class="icon">🤝</div><h3>Learning to Live Together</h3><p>How can I relate to others and contribute?</p><div class="details"><b>Social or citizenship dimension</b><div class="skill-pills"><span>Respect for diversity</span><span>Empathy</span><span>Participation</span></div></div></button>
+          </div>
+          <h3 style="margin-top:24px">Dimension Match</h3>
+          <div id="dimensionMatch"></div>
+          <div class="feedback info" id="dimensionFeedback" role="status"></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="2">← Back</button><button class="btn btn-primary" id="dimensionCheck" type="button">Check matches</button><button class="btn btn-gold" id="dimensionNext" type="button" disabled>Enter the four domains →</button></div>
+        </div>
+      </section>
+
+      <section class="screen mission" id="personalScreen" data-step="4" data-mission="personal">
+        <div class="panel">
+          <div class="mission-head"><div class="mission-icon">🤝</div><div><div class="eyebrow">Mission 1 of 4</div><h2>Personal and Social Domain</h2></div></div>
+          <p>The personal domain concerns how you understand and manage yourself. The social domain concerns how you interact with others and participate in your community.</p>
+          <div class="skill-pills"><span>Self-awareness</span><span>Communication</span><span>Resilience</span><span>Negotiation</span><span>Empathy</span><span>Participation</span></div>
+          <div class="grid grid-3" style="margin-top:18px">
+            <div class="card"><h3>1. Notice</h3><p><b>Self-awareness:</b> Recognize what you are thinking, feeling, and doing.</p></div>
+            <div class="card"><h3>2. Accept</h3><p><b>Self-acceptance:</b> Acknowledge yourself honestly without harsh self-judgment.</p></div>
+            <div class="card"><h3>3. Choose</h3><p><b>Self-regulation:</b> Pause and select a response that supports your goals and respects others.</p></div>
+          </div>
+          <div class="skill-lab" data-explorer="personal">
+            <div class="skill-lab-head"><div><label for="personalSkillSelect">Skill Context Explorer</label><select id="personalSkillSelect" class="skill-select" data-domain="personal"></select></div><button class="btn btn-light random-skill" type="button" data-domain="personal">Surprise me</button></div>
+            <div class="skill-context-card" id="personalSkillCard"></div><div class="explore-count" id="personalExploreCount"></div>
+          </div>
+          <div class="scenario"><div class="micro-label">Scenario • Left Out</div><p>Your group of friends plans a weekend activity but deliberately excludes one member because some find that person “difficult.” You understand their concerns, but excluding the person without a respectful conversation seems unfair.</p></div>
+          <fieldset class="question"><legend>Which response best demonstrates responsible life-skill application?</legend>
+            <label class="choice"><input type="radio" name="personalChoice" value="0">Stay silent because the decision does not directly affect you.</label>
+            <label class="choice"><input type="radio" name="personalChoice" value="1">Send the excluded person screenshots of everything the group said.</label>
+            <label class="choice"><input type="radio" name="personalChoice" value="2">Encourage a respectful discussion of the concern and help the group find a fair solution.</label>
+            <label class="choice"><input type="radio" name="personalChoice" value="3">Insult the group members and leave the conversation.</label>
+          </fieldset>
+          <button class="btn btn-primary mission-check" type="button" data-id="personal">Test my decision</button><div class="feedback" id="personalFeedback" role="status"></div>
+          <div style="margin-top:18px"><label for="personalResponse">Write one respectful message you could send to the group.</label><textarea id="personalResponse" class="mission-response" maxlength="600" placeholder="Write at least 25 characters..."></textarea><div class="counter"><span>0</span>/600</div></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="3">← Back</button><button class="btn btn-gold mission-next" type="button" data-id="personal" data-next="5">Claim badge →</button></div>
+        </div>
+      </section>
+
+      <section class="screen mission" id="academicScreen" data-step="5" data-mission="academic">
+        <div class="panel">
+          <div class="mission-head"><div class="mission-icon">📚</div><div><div class="eyebrow">Mission 2 of 4</div><h2>Academic Domain</h2></div></div>
+          <p>Academic success involves more than intelligence. Life skills help you manage responsibilities, examine information, collaborate, and learn from difficulty.</p>
+          <div class="skill-pills"><span>Critical thinking</span><span>Creativity</span><span>Time management</span><span>Cooperation</span><span>Resilience</span><span>Academic integrity</span></div>
+          <div class="skill-lab" data-explorer="academic">
+            <div class="skill-lab-head"><div><label for="academicSkillSelect">Skill Context Explorer</label><select id="academicSkillSelect" class="skill-select" data-domain="academic"></select></div><button class="btn btn-light random-skill" type="button" data-domain="academic">Surprise me</button></div>
+            <div class="skill-context-card" id="academicSkillCard"></div><div class="explore-count" id="academicExploreCount"></div>
+          </div>
+          <div class="scenario"><div class="micro-label">Scenario • The Convenient Answer</div><p>Your group presents tomorrow. A member submits information copied from an AI response, but nobody has verified it. The group wants to use it because time is running out.</p></div>
+          <fieldset class="question"><legend>What is the most responsible response?</legend>
+            <label class="choice"><input type="radio" name="academicChoice" value="0">Use it immediately because AI-generated information is always reliable.</label>
+            <label class="choice"><input type="radio" name="academicChoice" value="1">Verify important claims using credible sources, correct errors, and acknowledge sources.</label>
+            <label class="choice"><input type="radio" name="academicChoice" value="2">Remove the member from the group without discussing the issue.</label>
+            <label class="choice"><input type="radio" name="academicChoice" value="3">Copy another group’s presentation instead.</label>
+          </fieldset>
+          <button class="btn btn-primary mission-check" type="button" data-id="academic">Test my decision</button><div class="feedback" id="academicFeedback" role="status"></div>
+          <div style="margin-top:18px"><label for="academicResponse">Explain how your group can verify the information and still meet the deadline.</label><textarea id="academicResponse" class="mission-response" maxlength="600" placeholder="Write at least 25 characters..."></textarea><div class="counter"><span>0</span>/600</div></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="4">← Back</button><button class="btn btn-gold mission-next" type="button" data-id="academic" data-next="6">Claim badge →</button></div>
+        </div>
+      </section>
+
+      <section class="screen mission" id="careerScreen" data-step="6" data-mission="career">
+        <div class="panel">
+          <div class="mission-head"><div class="mission-icon">💼</div><div><div class="eyebrow">Mission 3 of 4</div><h2>Career and Vocational Domain</h2></div></div>
+          <p>Career readiness includes technical ability and the human skills needed to communicate, adapt, solve problems, and act professionally.</p>
+          <div class="skill-pills"><span>Accountability</span><span>Communication</span><span>Resilience</span><span>Initiative</span><span>Problem-solving</span><span>Professionalism</span></div>
+          <div class="skill-lab" data-explorer="career">
+            <div class="skill-lab-head"><div><label for="careerSkillSelect">Skill Context Explorer</label><select id="careerSkillSelect" class="skill-select" data-domain="career"></select></div><button class="btn btn-light random-skill" type="button" data-domain="career">Surprise me</button></div>
+            <div class="skill-context-card" id="careerSkillCard"></div><div class="explore-count" id="careerExploreCount"></div>
+          </div>
+          <div class="scenario"><div class="micro-label">Scenario • First-Day Mistake</div><p>During work immersion, you misunderstand an instruction and make a mistake that delays the team. You worry that admitting it will make you appear incompetent.</p></div>
+          <fieldset class="question"><legend>What should you do?</legend>
+            <label class="choice"><input type="radio" name="careerChoice" value="0">Hide the mistake and hope no one notices.</label>
+            <label class="choice"><input type="radio" name="careerChoice" value="1">Blame the supervisor for giving unclear instructions.</label>
+            <label class="choice"><input type="radio" name="careerChoice" value="2">Acknowledge the mistake, ask how to correct it, and apply what you learn.</label>
+            <label class="choice"><input type="radio" name="careerChoice" value="3">Stop participating so you cannot make another mistake.</label>
+          </fieldset>
+          <button class="btn btn-primary mission-check" type="button" data-id="career">Test my decision</button><div class="feedback" id="careerFeedback" role="status"></div>
+          <div style="margin-top:18px"><label for="careerResponse">Write what you would say to your work-immersion supervisor.</label><textarea id="careerResponse" class="mission-response" maxlength="600" placeholder="Write at least 25 characters..."></textarea><div class="counter"><span>0</span>/600</div></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="5">← Back</button><button class="btn btn-gold mission-next" type="button" data-id="career" data-next="7">Claim badge →</button></div>
+        </div>
+      </section>
+
+      <section class="screen mission" id="digitalScreen" data-step="7" data-mission="digital">
+        <div class="panel">
+          <div class="mission-head"><div class="mission-icon">📱</div><div><div class="eyebrow">Mission 4 of 4</div><h2>Digital Domain</h2></div></div>
+          <p>Digital life skills help you use technology safely, critically, ethically, and effectively while protecting your well-being and the dignity of others.</p>
+          <div class="skill-pills"><span>Digital citizenship</span><span>Critical thinking</span><span>Empathy</span><span>Privacy awareness</span><span>Self-control</span><span>Communication</span></div>
+          <div class="skill-lab" data-explorer="digital">
+            <div class="skill-lab-head"><div><label for="digitalSkillSelect">Skill Context Explorer</label><select id="digitalSkillSelect" class="skill-select" data-domain="digital"></select></div><button class="btn btn-light random-skill" type="button" data-domain="digital">Surprise me</button></div>
+            <div class="skill-context-card" id="digitalSkillCard"></div><div class="explore-count" id="digitalExploreCount"></div>
+          </div>
+          <div class="scenario"><div class="micro-label">Scenario • Share or Stop?</div><p>A humiliating video of a schoolmate circulates online. Friends encourage you to repost it because they find it funny. The student did not give permission for it to be shared.</p></div>
+          <fieldset class="question"><legend>Which action best protects people and promotes responsible digital participation?</legend>
+            <label class="choice"><input type="radio" name="digitalChoice" value="0">Repost it because many people have already shared it.</label>
+            <label class="choice"><input type="radio" name="digitalChoice" value="1">React with a laughing emoji but do not repost it.</label>
+            <label class="choice"><input type="radio" name="digitalChoice" value="2">Refuse to share, report the content, and encourage others to stop circulating it.</label>
+            <label class="choice"><input type="radio" name="digitalChoice" value="3">Save a private copy before it is removed.</label>
+          </fieldset>
+          <button class="btn btn-primary mission-check" type="button" data-id="digital">Test my decision</button><div class="feedback" id="digitalFeedback" role="status"></div>
+          <div style="margin-top:18px"><label for="digitalResponse">Write a message that discourages sharing without creating another conflict.</label><textarea id="digitalResponse" class="mission-response" maxlength="600" placeholder="Write at least 25 characters..."></textarea><div class="counter"><span>0</span>/600</div></div>
+          <div class="badge-row" id="badgeRow"><span class="badge" data-badge="personal">🤝 Relationship Builder</span><span class="badge" data-badge="academic">📚 Learning Strategist</span><span class="badge" data-badge="career">💼 Career Ready</span><span class="badge" data-badge="digital">📱 Digital Citizen</span></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="6">← Back</button><button class="btn btn-gold mission-next" type="button" data-id="digital" data-next="8">Take the final challenge →</button></div>
+        </div>
+      </section>
+
+      <section class="screen" id="summativeScreen" data-step="8">
+        <div class="panel">
+          <div class="eyebrow">Final challenge • 12 points</div><h2>Four-Domain Decision Challenge</h2>
+          <p class="lead">Answer all questions before submitting. Explanations and correct answers will appear only after submission. Questions are rearranged on each retake.</p>
+          <div class="callout"><b>Before you begin:</b> Think about the situation, its possible consequences, the people affected, and the skill that supports the most responsible response.</div>
+          <div id="summativeQuestions"></div>
+          <div class="feedback try" id="summativeAlert" role="alert"></div>
+          <div class="toolbar"><button class="btn btn-ghost" type="button" data-go="7">← Review missions</button><button class="btn btn-primary" type="button" id="submitSummative">Submit final answers</button></div>
+          <div id="summativeResult" style="display:none;margin-top:25px"></div>
+        </div>
+      </section>
+
+      <section class="screen" id="certificateScreen" data-step="9">
+        <div class="panel">
+          <div class="no-print"><div class="eyebrow">Quest completed</div><h2>Your Certificate Is Ready</h2><p>Use your device’s print menu to print the certificate or save it as a PDF. On iPhone or iPad, open the print preview, enlarge the preview with two fingers, then use Share to save it.</p></div>
+          <div class="certificate" id="certificate">
+            <div class="cert-kicker">Certificate of Completion</div>
+            <div class="cert-title">Life Skills Quest</div>
+            <p>This certificate is proudly presented to</p>
+            <div class="cert-name" id="certName">Learner Name</div>
+            <p>of <b id="certSection">Section</b> for completing the self-paced learning activity</p>
+            <h3>Applying Life Skills Across Different Domains</h3>
+            <p>and demonstrating thoughtful application of life skills in personal and social, academic, career and vocational, and digital situations.</p>
+            <div class="cert-grid"><div class="cert-stat"><b id="certScore">0/12</b><span>Best score</span></div><div class="cert-stat"><b id="certAttempts">1</b><span>Attempt(s)</span></div><div class="cert-stat"><b id="certStarted">—</b><span>Checked in</span></div><div class="cert-stat"><b id="certCompleted">—</b><span>Completed</span></div></div>
+            <div class="signature">Jessie Benjs S. Monta, LPT<br><span class="small">Instructor</span></div>
+          </div>
+          <div class="toolbar no-print"><button class="btn btn-ghost" type="button" data-go="8">← Review results</button><button class="btn btn-primary" type="button" id="printCertificate">Print / Save as PDF</button><button class="btn btn-light" type="button" id="resetActivity">Start over</button></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div><div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <script>
+  (function(){
+    'use strict';
+    var KEY='lifeSkillsFourDomains_v1';
+    var steps=[
+      ['Welcome','welcomeScreen'],['Check-in','checkinScreen'],['Foundation','foundationScreen'],['Dimensions','dimensionsScreen'],
+      ['Personal & Social','personalScreen'],['Academic','academicScreen'],['Career','careerScreen'],['Digital','digitalScreen'],['Final Challenge','summativeScreen'],['Certificate','certificateScreen']
+    ];
+    var defaults={name:'',section:'',started:'',completed:'',current:0,unlocked:0,ratings:{self:3,social:3,academic:3,career:3,digital:3},checkin:'',missionChecked:{},missionEarned:{},toolkitViewed:{personal:[],academic:[],career:[],digital:[]},responses:{},attempts:0,bestScore:0,lastScore:0,submitted:false,qOrder:[]};
+    var storageAvailable=true,storageWarningShown=false;
+    var state=load();
+    function clone(o){return JSON.parse(JSON.stringify(o));}
+    function load(){try{var raw=localStorage.getItem(KEY);if(raw){var s=JSON.parse(raw),d=clone(defaults);Object.keys(s).forEach(function(k){d[k]=s[k]});return d;}}catch(e){storageAvailable=false;}return clone(defaults);}
+    function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){storageAvailable=false;}if(!storageAvailable&&!storageWarningShown){storageWarningShown=true;toast('This browser is blocking saved progress. Keep this tab open or print your result before closing.');}updateUI();}
+    function fmt(iso){if(!iso)return '—';try{return new Date(iso).toLocaleString([], {year:'numeric',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});}catch(e){return iso;}}
+    function toast(msg){var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(function(){el.classList.remove('show')},2400);}
+    function safeText(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]});}
+    function updateUI(){
+      var pct=state.started?Math.round((state.unlocked/(steps.length-1))*100):0;if(state.completed)pct=100;
+      document.getElementById('progressBar').style.width=pct+'%';document.querySelector('.progress-shell').setAttribute('aria-valuenow',pct);document.getElementById('progressText').textContent=pct+'% complete';
+      var session=document.getElementById('sessionCard');session.hidden=!state.started;if(state.started){document.getElementById('sideStudent').textContent=state.name+' • '+state.section;document.getElementById('sideStarted').textContent='Started '+fmt(state.started);}
+      renderNav();updateBadges();
+    }
+    function renderNav(){var nav=document.getElementById('stepNav');nav.innerHTML='';steps.forEach(function(s,i){var b=document.createElement('button');b.type='button';b.className='step-btn'+(i===state.current?' active':'')+(i<state.unlocked||state.completed?' done':'');b.disabled=i>state.unlocked;b.innerHTML='<span class="num">'+(i<state.unlocked||state.completed?'✓':(i+1))+'</span><span class="label">'+s[0]+'</span>';b.addEventListener('click',function(){go(i)});nav.appendChild(b);});}
+    function go(i){if(i>state.unlocked)return;state.current=i;document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active')});document.getElementById(steps[i][1]).classList.add('active');renderNav();window.scrollTo({top:0,behavior:'smooth'});save();}
+    function unlockNext(i){state.unlocked=Math.max(state.unlocked,i+1);save();go(i+1);}
+    function updateBadges(){document.querySelectorAll('[data-badge]').forEach(function(el){el.classList.toggle('earned',!!state.missionEarned[el.getAttribute('data-badge')]);});}
+    function setFeedback(el,type,text){el.className='feedback show '+type;el.innerHTML=text;}
+
+    document.getElementById('startBtn').addEventListener('click',function(){var n=document.getElementById('studentName').value.trim(),s=document.getElementById('studentSection').value.trim();if(n.length<3||s.length<2){toast('Please enter your complete name and section.');return;}state.name=n;state.section=s;if(!state.started)state.started=new Date().toISOString();state.unlocked=Math.max(state.unlocked,1);save();go(Math.max(1,state.current));});
+    document.querySelectorAll('[data-go]').forEach(function(b){b.addEventListener('click',function(){go(Number(b.getAttribute('data-go')))});});
+
+    document.querySelectorAll('[data-rating]').forEach(function(r){var key=r.getAttribute('data-rating');r.value=state.ratings[key]||3;r.nextElementSibling.value=r.value;r.addEventListener('input',function(){r.nextElementSibling.value=r.value;state.ratings[key]=Number(r.value);save();});});
+    var checkin=document.getElementById('checkinReflection');checkin.value=state.checkin||'';document.getElementById('checkinCount').textContent=checkin.value.length;checkin.addEventListener('input',function(){state.checkin=checkin.value;document.getElementById('checkinCount').textContent=checkin.value.length;save();});
+    document.getElementById('checkinNext').addEventListener('click',function(){if(checkin.value.trim().length<20){toast('Please explain your goal in at least 20 characters.');checkin.focus();return;}unlockNext(1);});
+
+    var foundation=[
+      {q:'Which statement best describes a life skill?',o:['A fact memorized for an examination','An ability used to respond effectively to everyday demands','A talent that a person is born with and cannot improve'],a:1,e:'Life skills are developed abilities, attitudes, and competencies used in real situations.'},
+      {q:'Which action shows that a learner is applying resilience?',o:['Ignoring every difficult task','Continuing after a setback and adjusting the strategy','Pretending that failure never happened'],a:1,e:'Resilience involves recovering, learning, and continuing constructively.'},
+      {q:'Why can one life skill belong to several domains?',o:['The domains are exactly the same','Real situations often involve thinking, emotions, actions, and relationships together','Every skill has several unrelated definitions'],a:1,e:'Life situations overlap, so skills transfer across personal, academic, career, and digital contexts.'}
+    ];
+    function renderFoundation(){var box=document.getElementById('foundationQuiz');box.innerHTML=foundation.map(function(q,i){return '<fieldset class="question"><legend>'+(i+1)+'. '+q.q+'</legend>'+q.o.map(function(o,j){return '<label class="choice"><input type="radio" name="f'+i+'" value="'+j+'">'+o+'</label>'}).join('')+'</fieldset>';}).join('');}
+    renderFoundation();
+    document.getElementById('foundationCheck').addEventListener('click',function(){var score=0,missing=false,details=[];foundation.forEach(function(q,i){var a=document.querySelector('input[name=f'+i+']:checked');if(!a)missing=true;else if(Number(a.value)===q.a)score++;details.push('<div><b>'+(i+1)+'. '+(a&&Number(a.value)===q.a?'Correct':'Review')+':</b> '+q.e+'</div>');});if(missing){toast('Please answer all three questions.');return;}setFeedback(document.getElementById('foundationFeedback'),score===3?'good':'info','<b>You got '+score+' of 3.</b>'+details.join(''));document.getElementById('foundationNext').disabled=false;});
+    document.getElementById('foundationNext').addEventListener('click',function(){unlockNext(2)});
+
+    document.querySelectorAll('.dimension-card').forEach(function(c){c.addEventListener('click',function(){c.setAttribute('aria-expanded',c.getAttribute('aria-expanded')!=='true')});});
+    var matches=[['Evaluating evidence before accepting a claim','know'],['Turning a plan into an organized group project','do'],['Managing frustration after receiving criticism','be'],['Including different perspectives in a community decision','live']];
+    var matchNames={know:'Learning to Know',do:'Learning to Do',be:'Learning to Be',live:'Learning to Live Together'};
+    document.getElementById('dimensionMatch').innerHTML=matches.map(function(m,i){return '<div class="question"><label for="m'+i+'">'+(i+1)+'. '+m[0]+'</label><select id="m'+i+'"><option value="">Choose a dimension</option><option value="know">Learning to Know</option><option value="do">Learning to Do</option><option value="be">Learning to Be</option><option value="live">Learning to Live Together</option></select></div>';}).join('');
+    document.getElementById('dimensionCheck').addEventListener('click',function(){var score=0,missing=false;matches.forEach(function(m,i){var v=document.getElementById('m'+i).value;if(!v)missing=true;if(v===m[1])score++;});if(missing){toast('Complete all four matches first.');return;}if(score===4){setFeedback(document.getElementById('dimensionFeedback'),'good','Excellent! You connected every action to its most evident dimension. Remember that other dimensions may also contribute.');document.getElementById('dimensionNext').disabled=false;}else{setFeedback(document.getElementById('dimensionFeedback'),'try','You matched '+score+' of 4 correctly. Revisit the card questions, adjust your answers, and try again.');}});
+    document.getElementById('dimensionNext').addEventListener('click',function(){unlockNext(3)});
+
+    var domainSkills={
+      personal:[
+        {n:'Self-awareness',a:'Recognize your emotions, strengths, limitations, values, and behavior patterns.',s:'Paolo notices that he becomes defensive when corrected, names his embarrassment, and chooses to listen to the feedback.'},
+        {n:'Self-acceptance',a:'Acknowledge your qualities and limitations without harsh self-judgment.',s:'Mira is not selected for a performance. She accepts her disappointment without deciding that she is untalented.'},
+        {n:'Self-regulation',a:'Manage emotions and impulses before choosing a response.',s:'After receiving an irritating message, Joshua pauses and waits until he can answer calmly.'},
+        {n:'Resilience',a:'Recover, adjust, and continue after disappointment or difficulty.',s:'A learner is rejected by an organization, requests feedback, develops the needed skills, and applies again.'},
+        {n:'Stress management',a:'Use healthy strategies to handle pressure and protect well-being.',s:'During examination week, Karl divides tasks, schedules breaks, sleeps adequately, and asks for help.'},
+        {n:'Communication',a:'Express thoughts, feelings, and needs clearly and respectfully.',s:'A student says, “I felt ignored when I was interrupted. Can we give each other time to speak?”'},
+        {n:'Active listening',a:'Give full attention and check understanding before responding.',s:'Bea listens to a friend’s family problem and asks whether the friend wants advice or simply needs support.'},
+        {n:'Empathy',a:'Understand another person’s feelings, needs, and perspective.',s:'Instead of calling a quiet classmate unfriendly, Miguel privately checks whether the classmate needs support.'},
+        {n:'Assertiveness',a:'Communicate choices and needs firmly without being passive or aggressive.',s:'When pressured into an uncomfortable activity, Ana calmly says, “I respect your choice, but I will not participate.”'},
+        {n:'Boundary-setting',a:'Establish reasonable limits that protect well-being and relationships.',s:'A classmate repeatedly asks to copy work. The learner refuses but offers to explain the lesson.'},
+        {n:'Negotiation',a:'Find a fair agreement when people have different needs or interests.',s:'Two siblings need the same computer and agree on a schedule based on their deadlines.'},
+        {n:'Conflict resolution',a:'Address disagreements constructively and work toward a solution.',s:'Two group members listen to each side, redistribute responsibilities, and agree on new deadlines.'},
+        {n:'Cooperation',a:'Share responsibilities and coordinate efforts toward a common goal.',s:'Community volunteers divide registration, packing, and resident-assistance duties during an outreach project.'},
+        {n:'Respect for diversity',a:'Value people across differences in culture, language, belief, ability, or identity.',s:'Learners ensure that different cultural experiences are represented respectfully in a class program.'},
+        {n:'Participation',a:'Contribute ideas and responsible action to group or community concerns.',s:'Students notice improper waste disposal, propose labeled bins, and help conduct an information campaign.'}
+      ],
+      academic:[
+        {n:'Goal-setting',a:'Establish specific, realistic, and measurable learning targets.',s:'Lea plans to evaluate one source and revise one paragraph each evening to improve her research writing.'},
+        {n:'Time management',a:'Allocate enough time for tasks, rest, and other responsibilities.',s:'With three deadlines approaching, a learner estimates the work and schedules tasks according to urgency.'},
+        {n:'Organization',a:'Arrange materials, information, files, and responsibilities systematically.',s:'Nina creates subject folders, labels files clearly, and records every deadline in one calendar.'},
+        {n:'Self-directed learning',a:'Identify and address your own learning needs.',s:'After struggling with statistics, a learner reviews examples, uses a recommended tutorial, and prepares questions.'},
+        {n:'Metacognition',a:'Evaluate how you learn and whether a strategy is effective.',s:'A student realizes that rereading is ineffective and changes to retrieval practice and concept mapping.'},
+        {n:'Critical thinking',a:'Examine evidence, assumptions, and arguments before concluding.',s:'A learner compares several sources instead of accepting the first website that supports an opinion.'},
+        {n:'Information literacy',a:'Find, evaluate, organize, and cite reliable information.',s:'A group checks the author, date, evidence, and publisher before using an online claim.'},
+        {n:'Problem-solving',a:'Identify the cause of a learning problem and test a workable solution.',s:'When an experiment fails, the group checks the procedure and changes one possible cause at a time.'},
+        {n:'Creativity',a:'Develop original ideas or meaningful ways to communicate learning.',s:'Learners replace an ordinary report with an interactive timeline showing causes and effects.'},
+        {n:'Decision-making',a:'Choose an academic action after considering evidence and consequences.',s:'A student compares available sources, time, relevance, and interest before choosing a research topic.'},
+        {n:'Communication',a:'Explain academic ideas clearly through speaking, writing, and visuals.',s:'During a defense, a learner organizes the explanation, defines terms, and answers with evidence.'},
+        {n:'Collaboration',a:'Coordinate strengths and responsibilities in group learning.',s:'Members divide research, writing, design, and presentation work while reviewing one another’s contributions.'},
+        {n:'Using feedback',a:'Give useful suggestions and use criticism to improve work.',s:'After a peer says an argument lacks evidence, the writer asks for clarification and revises it.'},
+        {n:'Academic integrity',a:'Complete work honestly and acknowledge sources and tools.',s:'A learner uses AI for possible outlines, verifies the output, writes independently, and discloses its use.'},
+        {n:'Academic resilience',a:'Continue learning after mistakes or disappointing performance.',s:'After failing a quiz, a student studies the errors, attends remediation, and changes the study strategy.'}
+      ],
+      career:[
+        {n:'Career self-awareness',a:'Connect your interests, abilities, values, and limitations with possible work.',s:'A learner who enjoys design but dislikes repetition explores careers combining creativity and technology.'},
+        {n:'Career planning',a:'Set a career goal and identify qualifications, resources, and next steps.',s:'A student interested in nursing studies admission requirements, costs, scholarships, and preparation.'},
+        {n:'Job-search skills',a:'Locate legitimate opportunities and tailor application materials.',s:'A graduating learner investigates employers and adjusts the résumé for each position.'},
+        {n:'Interview communication',a:'Explain qualifications clearly and support claims with examples.',s:'During a mock interview, a learner uses school and volunteer experiences to demonstrate responsibility.'},
+        {n:'Professional communication',a:'Communicate appropriately with supervisors, coworkers, and clients.',s:'An intern asks a concise clarifying question and repeats the expected output before starting.'},
+        {n:'Professionalism',a:'Demonstrate reliability, appropriate conduct, respect, and readiness.',s:'A trainee arrives on time, follows policy, completes work, and reports problems early.'},
+        {n:'Work ethic',a:'Show honest, responsible, and consistent effort.',s:'A student employee completes a task carefully even when the supervisor is not present.'},
+        {n:'Teamwork',a:'Coordinate with others to achieve workplace objectives.',s:'Work-immersion team members divide duties and provide updates so requests are completed on time.'},
+        {n:'Adaptability',a:'Adjust to new responsibilities, schedules, tools, and expectations.',s:'When new software is introduced, an employee attends training and practises using the system.'},
+        {n:'Problem-solving',a:'Identify workplace causes and develop practical improvements.',s:'After delayed orders, a small food business examines its process and creates an order-tracking procedure.'},
+        {n:'Decision-making',a:'Select responsible action after considering risks and consequences.',s:'An intern notices a faulty machine, stops using it, and follows the reporting procedure.'},
+        {n:'Accountability',a:'Accept responsibility and take corrective and preventive action.',s:'A trainee reports incorrect data, corrects the record, and creates a checking routine.'},
+        {n:'Initiative',a:'Take appropriate action without waiting for every instruction.',s:'After finishing assigned work, an intern organizes materials and asks for the next priority task.'},
+        {n:'Leadership',a:'Guide people toward a goal while considering their strengths and needs.',s:'A team leader consults members, balances workloads, and monitors progress respectfully.'},
+        {n:'Networking',a:'Build respectful professional connections and maintain them appropriately.',s:'At a career event, a student introduces herself, asks relevant questions, and keeps professional contacts.'},
+        {n:'Entrepreneurship',a:'Identify a need and develop a valuable, realistic response.',s:'Students study demand, costs, and pricing before offering affordable printing services.'},
+        {n:'Financial literacy',a:'Manage income, expenses, savings, and financial risks.',s:'A student freelancer divides earnings among transport, school expenses, savings, and emergencies.'},
+        {n:'Occupational safety',a:'Recognize hazards and follow established safety procedures.',s:'A trainee sees liquid near electrical equipment, keeps people away, and reports it immediately.'}
+      ],
+      digital:[
+        {n:'Digital literacy',a:'Use devices, applications, files, and platforms effectively.',s:'A learner formats a document, organizes files, and submits the correct file type through the LMS.'},
+        {n:'Information literacy',a:'Locate and evaluate reliable information online.',s:'Before accepting a health claim, a student checks the author, institution, evidence, and date.'},
+        {n:'Media literacy',a:'Examine how digital messages are constructed and how they influence people.',s:'A viral clip shows only part of an argument, so the learner finds the full recording and context.'},
+        {n:'Fact-checking',a:'Verify a claim before accepting or sharing it.',s:'A class-suspension message circulates, and the student checks official school and government pages.'},
+        {n:'Digital communication',a:'Express ideas clearly and appropriately through digital channels.',s:'A learner sends an email with a clear subject, proper greeting, concise request, and identification.'},
+        {n:'Online collaboration',a:'Work responsibly with others through shared digital tools.',s:'Members assign sections in a shared document, comment constructively, and preserve others’ work.'},
+        {n:'Netiquette',a:'Follow respectful standards of online interaction.',s:'During an online discussion, a student challenges the argument without insulting the person.'},
+        {n:'Digital empathy',a:'Consider how online actions may affect another person.',s:'Before posting an embarrassing photo, a learner considers possible harm and asks permission.'},
+        {n:'Privacy management',a:'Control personal information, permissions, and account exposure.',s:'A student reviews app permissions and avoids publicly posting identification documents.'},
+        {n:'Cybersecurity awareness',a:'Protect devices, accounts, and authentication information.',s:'A supposed employer requests an OTP, so the learner refuses, verifies the organization, and reports it.'},
+        {n:'Digital-footprint management',a:'Consider the long-term effects of posts, reactions, and searches.',s:'Before posting an angry complaint, a student considers its effect on relationships and future opportunities.'},
+        {n:'Responsible social media use',a:'Post, react, and share with care for accuracy, privacy, and dignity.',s:'A learner refuses to repost a humiliating video, reports it, and asks friends to stop sharing.'},
+        {n:'Digital content creation',a:'Produce accurate, accessible, and ethical digital material.',s:'A group makes a readable infographic using verified information and credited images.'},
+        {n:'Copyright awareness',a:'Respect ownership, licenses, and attribution requirements.',s:'A learner uses a properly licensed image and credits its creator instead of copying it without permission.'},
+        {n:'Artificial-intelligence literacy',a:'Use AI critically, transparently, and responsibly.',s:'A learner uses AI to brainstorm, checks every claim, writes the final work, and follows disclosure rules.'},
+        {n:'Digital problem-solving',a:'Diagnose and address basic technology difficulties systematically.',s:'When a file will not upload, the student checks connection, format, size, and filename before seeking help.'},
+        {n:'Digital self-regulation',a:'Manage online impulses, notifications, and distractions.',s:'A learner enables focus mode and schedules social-media breaks while completing schoolwork.'},
+        {n:'Digital well-being',a:'Balance technology use with physical, emotional, and social health.',s:'After late-night scrolling affects sleep, a student establishes a device-free period before bedtime.'}
+      ]
+    };
+    function showDomainSkill(domain,index){
+      var list=domainSkills[domain],item=list[index],card=document.getElementById(domain+'SkillCard');
+      card.innerHTML='<div class="context-block"><h4>How '+safeText(item.n)+' is applied</h4><h3>'+safeText(item.n)+'</h3><p>'+safeText(item.a)+'</p></div><div class="context-block situation"><h4>Situational context</h4><p>'+safeText(item.s)+'</p></div>';
+      if(!state.toolkitViewed[domain])state.toolkitViewed[domain]=[];
+      if(state.toolkitViewed[domain].indexOf(index)<0)state.toolkitViewed[domain].push(index);
+      document.getElementById(domain+'ExploreCount').textContent='Examples explored: '+state.toolkitViewed[domain].length+' of '+list.length+' • Explore at least 3 to complete this mission.';
+      save();
+    }
+    function initSkillExplorers(){
+      Object.keys(domainSkills).forEach(function(domain){
+        var select=document.getElementById(domain+'SkillSelect'),list=domainSkills[domain];
+        select.innerHTML=list.map(function(item,i){return '<option value="'+i+'">'+safeText(item.n)+'</option>';}).join('');
+        select.addEventListener('change',function(){showDomainSkill(domain,Number(select.value));});
+        showDomainSkill(domain,0);
+      });
+      document.querySelectorAll('.random-skill').forEach(function(b){b.addEventListener('click',function(){var domain=b.getAttribute('data-domain'),select=document.getElementById(domain+'SkillSelect'),next=Math.floor(Math.random()*domainSkills[domain].length);if(domainSkills[domain].length>1&&next===Number(select.value))next=(next+1)%domainSkills[domain].length;select.value=next;showDomainSkill(domain,next);});});
+    }
+    initSkillExplorers();
+
+    var missionData={
+      personal:{correct:2,good:'Strong choice. Empathy helps you consider the excluded learner, communication makes the concern discussable, and negotiation helps the group reach a fair response.',other:['Silence may protect you from discomfort, but it allows exclusion to continue. Responsible participation means addressing the concern respectfully.','Sharing private screenshots can intensify the conflict and violate trust. Choose direct, respectful communication instead.','','Insults may reproduce the same disrespect you are trying to correct. Assertiveness can be firm without becoming harmful.']},
+      academic:{correct:1,good:'Strong choice. Critical thinking checks accuracy, cooperation shares the workload, and academic integrity requires responsible use and acknowledgment of sources.',other:['AI can produce inaccurate or invented information. Convenience should not replace verification.','','Removing a member immediately avoids the learning opportunity. First clarify responsibilities and correct the work together.','Copying another group’s work violates academic integrity and does not solve the information problem.']},
+      career:{correct:2,good:'Strong choice. Accountability builds trust, communication makes correction possible, and resilience turns a mistake into professional learning.',other:['Hidden errors can grow and affect the whole team. Early, honest communication supports correction.','Instructions may have been unclear, but blame alone does not repair the problem. Clarify, take appropriate responsibility, and help correct it.','','Avoidance prevents learning and weakens reliability. Ask for guidance and use the feedback.']},
+      digital:{correct:2,good:'Strong choice. Empathy considers the student’s dignity, critical thinking anticipates harm, and responsible participation helps stop its spread.',other:['Popularity does not make harmful sharing acceptable. Every repost increases the audience and possible harm.','Even a reaction can reward and amplify humiliating content. Avoid engaging in ways that encourage circulation.','','Keeping a copy without a legitimate safeguarding reason continues possession of content shared without consent.']}
+    };
+    document.querySelectorAll('.mission-check').forEach(function(b){b.addEventListener('click',function(){var id=b.getAttribute('data-id'),chosen=document.querySelector('input[name='+id+'Choice]:checked'),f=document.getElementById(id+'Feedback'),d=missionData[id];if(!chosen){toast('Choose a response before checking your decision.');return;}var v=Number(chosen.value);state.missionChecked[id]=true;save();setFeedback(f,v===d.correct?'good':'try',v===d.correct?d.good:'Consider another approach. '+d.other[v]);});});
+    document.querySelectorAll('.mission-response').forEach(function(t){var id=t.id.replace('Response','');t.value=state.responses[id]||'';var count=t.nextElementSibling.querySelector('span');count.textContent=t.value.length;t.addEventListener('input',function(){state.responses[id]=t.value;count.textContent=t.value.length;save();});});
+    document.querySelectorAll('.mission-next').forEach(function(b){b.addEventListener('click',function(){var id=b.getAttribute('data-id'),text=document.getElementById(id+'Response').value.trim();if((state.toolkitViewed[id]||[]).length<3){toast('Explore at least three life-skill examples in this domain first.');return;}if(!state.missionChecked[id]){toast('Test your decision first to receive feedback.');return;}if(text.length<25){toast('Complete the written response using at least 25 characters.');document.getElementById(id+'Response').focus();return;}state.missionEarned[id]=true;save();toast('Badge earned!');unlockNext(Number(b.getAttribute('data-next'))-1);});});
+
+    var questions=[
+      {q:'Which description best captures life skills?',o:['Facts used only in school tests','Abilities, attitudes, and competencies for handling real-life demands','Natural talents that cannot be learned','Rules that apply only in workplaces'],a:1,e:'Life skills combine ways of thinking, feeling, relating, and acting in daily life.'},
+      {q:'Which dimension primarily develops creativity, critical thinking, and problem-solving?',o:['Learning to Know','Learning to Do','Learning to Be','Learning to Live Together'],a:0,e:'These are the three core skills emphasized under Learning to Know.'},
+      {q:'Which dimension asks, “How can I develop and manage myself?”',o:['Learning to Know','Learning to Do','Learning to Be','Learning to Live Together'],a:2,e:'Learning to Be focuses on individual empowerment and management of oneself.'},
+      {q:'A friend becomes defensive during a disagreement. What is the best first response?',o:['Raise your voice so your point is understood','Listen, acknowledge the concern, and express your view calmly','End the friendship immediately','Ask others to take your side'],a:1,e:'Active listening, empathy, and assertive communication reduce defensiveness and support resolution.'},
+      {q:'A classmate is excluded because of their accent. Which response best applies life skills?',o:['Ignore it because the classmate should adapt','Join the joke so you will not be excluded','Challenge the behavior respectfully and include the classmate','Post about the offenders without speaking to anyone'],a:2,e:'Respect for diversity, empathy, and participation require constructive action against exclusion.'},
+      {q:'After receiving a low test score, which response shows critical thinking and resilience?',o:['Conclude that you are incapable','Review errors, seek feedback, and adjust your study strategy','Hide the paper and forget the result','Blame the teacher without examining the test'],a:1,e:'The response examines evidence, learns from feedback, and continues with an adjusted plan.'},
+      {q:'Your project group finds a dramatic claim online with no identified author or evidence. What should you do?',o:['Use it because it supports your argument','Share it first and verify it later','Cross-check the claim with credible, current sources','Reject all online information automatically'],a:2,e:'Critical thinking and information literacy require verification rather than automatic acceptance or rejection.'},
+      {q:'You have three deadlines in one week. Which strategy best demonstrates self-management?',o:['Start whichever task feels easiest and ignore due dates','List requirements, prioritize by urgency and effort, and schedule focused work','Wait for motivation before beginning','Ask classmates to complete the tasks for you'],a:1,e:'Planning, prioritization, and realistic scheduling turn responsibility into manageable action.'},
+      {q:'During work immersion, you discover an error you made. Which response is most professional?',o:['Correct it secretly even if others are affected','Report it promptly, help correct it, and explain how you will prevent recurrence','Wait until somebody else notices','Say that mistakes are normal and take no action'],a:1,e:'Professional accountability combines honesty, corrective action, and learning.'},
+      {q:'A supervisor gives an instruction you do not fully understand. What should you do?',o:['Guess so you appear confident','Ask a concise clarifying question and confirm the expected output','Refuse the task','Ask a friend outside the workplace to decide'],a:1,e:'Clarifying expectations is responsible communication, not incompetence.'},
+      {q:'A private photo of a student is being mocked in a group chat. What is the most responsible action?',o:['Forward it only to close friends','Do not share it, report it when appropriate, and offer support to the student','Save it in case it becomes important later','Add a mild joke so others will like you'],a:1,e:'Digital citizenship protects privacy and dignity and avoids amplifying harm.'},
+      {q:'An online job advertisement promises instant income but asks for your password and one-time PIN. What should you do?',o:['Provide the details before the offer expires','Send only the password, not the PIN','Stop, verify the organization independently, and never disclose authentication details','Ask a friend to try it first'],a:2,e:'Critical thinking and cybersecurity awareness require independent verification and protection of credentials.'}
+    ];
+    function shuffle(arr){var a=arr.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+    function ensureOrder(){if(!state.qOrder||state.qOrder.length!==questions.length)state.qOrder=shuffle(questions.map(function(_,i){return i}));}
+    function renderSummative(){ensureOrder();var box=document.getElementById('summativeQuestions');box.innerHTML=state.qOrder.map(function(qi,pos){var q=questions[qi];return '<fieldset class="question" data-qi="'+qi+'"><legend>'+(pos+1)+'. '+q.q+'</legend>'+q.o.map(function(o,j){return '<label class="choice"><input type="radio" name="s'+qi+'" value="'+j+'">'+o+'</label>'}).join('')+'<div class="feedback" id="sexp'+qi+'"></div></fieldset>';}).join('');save();}
+    renderSummative();
+    document.getElementById('submitSummative').addEventListener('click',function(){var missing=[];state.qOrder.forEach(function(qi){if(!document.querySelector('input[name=s'+qi+']:checked'))missing.push(qi)});if(missing.length){setFeedback(document.getElementById('summativeAlert'),'try','Please answer all 12 questions. You still have '+missing.length+' unanswered item(s).');return;}document.getElementById('summativeAlert').className='feedback';var score=0;questions.forEach(function(q,qi){var a=document.querySelector('input[name=s'+qi+']:checked'),v=Number(a.value),exp=document.getElementById('sexp'+qi);if(v===q.a)score++;setFeedback(exp,v===q.a?'good':'try','<b>'+(v===q.a?'Correct.':'Best answer: '+q.o[q.a])+ '</b> '+q.e);document.querySelectorAll('input[name=s'+qi+']').forEach(function(x){x.disabled=true});});state.attempts++;state.lastScore=score;state.bestScore=Math.max(state.bestScore,score);state.submitted=true;state.completed=new Date().toISOString();state.unlocked=9;save();showResult();buildCertificate();celebrate();});
+    function showResult(){if(!state.submitted)return;var box=document.getElementById('summativeResult'),pct=Math.round(state.lastScore/12*100),msg=pct>=90?'Excellent transfer of learning!':pct>=75?'Good work. Review the explanations to strengthen your decisions.':'You completed the challenge. Review each explanation before trying again.';box.style.display='block';box.innerHTML='<div class="result-grid"><div class="score-ring" style="--score-angle:'+(pct*3.6)+'deg"><span>'+state.lastScore+'/12</span></div><div><h3>'+msg+'</h3><p>Your best score is <b>'+state.bestScore+'/12</b> after <b>'+state.attempts+'</b> attempt(s).</p><div class="toolbar" style="border:0;padding:0;justify-content:flex-start"><button class="btn btn-light" type="button" id="retakeBtn">Retake with rearranged questions</button><button class="btn btn-gold" type="button" id="certificateBtn">Generate certificate →</button></div></div></div>';document.getElementById('retakeBtn').addEventListener('click',retake);document.getElementById('certificateBtn').addEventListener('click',function(){buildCertificate();go(9)});}
+    function retake(){state.submitted=false;state.qOrder=shuffle(questions.map(function(_,i){return i}));save();document.getElementById('summativeResult').style.display='none';renderSummative();window.scrollTo({top:0,behavior:'smooth'});toast('New attempt ready. Questions have been rearranged.');}
+    function buildCertificate(){document.getElementById('certificate').classList.add('visible');document.getElementById('certName').textContent=state.name;document.getElementById('certSection').textContent=state.section;document.getElementById('certScore').textContent=state.bestScore+'/12';document.getElementById('certAttempts').textContent=state.attempts;document.getElementById('certStarted').textContent=fmt(state.started);document.getElementById('certCompleted').textContent=fmt(state.completed);}
+    function celebrate(){var c=document.getElementById('confetti');c.innerHTML='';for(var i=0;i<45;i++){var p=document.createElement('i');p.style.left=Math.random()*100+'%';p.style.animationDelay=Math.random()*.8+'s';p.style.transform='rotate('+Math.random()*360+'deg)';c.appendChild(p);}setTimeout(function(){c.innerHTML=''},3200);}
+    document.getElementById('printCertificate').addEventListener('click',function(){window.print()});
+    document.getElementById('resetActivity').addEventListener('click',function(){if(confirm('Start over and erase the saved progress on this device?')){try{localStorage.removeItem(KEY)}catch(e){}location.reload();}});
+
+    function restore(){document.getElementById('studentName').value=state.name||'';document.getElementById('studentSection').value=state.section||'';if(state.started)document.getElementById('resumeNote').textContent='Saved session started '+fmt(state.started)+'. Select an unlocked stage from the quest map to continue.';if(state.submitted){showResult();buildCertificate();}if(state.current>state.unlocked)state.current=state.unlocked;go(state.current||0);updateUI();}
+    restore();
+  })();
+  </script>
+</body>
+</html>
